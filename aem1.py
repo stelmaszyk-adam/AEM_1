@@ -54,6 +54,9 @@ def alg1(init_node):
 
         iterator = iterator - 1
 
+    length = distance(visited_nodes[0], visited_nodes[-1])
+    path_length = path_length + length
+
     print(path_length)
 
 
@@ -63,8 +66,5 @@ with open("kroA100.txt", 'r') as instance:
         '\n', "").split(' ')) for line in str_nodes]
 
 
-# print(alg1(np.random.randint(0, 100)))
 tests_50_alg1()
-# print(str(distance([1, 1380, 939], [2, 2848, 96])))
 
-# print(nodes)
