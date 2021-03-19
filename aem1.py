@@ -13,10 +13,23 @@ def convert_to_int_table(str_nodes):
     return [int(str_nodes[0]), int(str_nodes[1]), int(str_nodes[2])]
 
 
+def tests_50_alg1():
+
+    random_number_table = []
+
+    for _ in range(50):
+
+        random_number = np.random.randint(0, 100)
+        while random_number in random_number_table:
+            random_number = np.random.randint(0, 100)
+
+        random_number_table.append(random_number)
+        print("\n" + str(random_number))
+        alg1(random_number)
 
 
 def alg1(init_node):
-    localy_nodes = nodes
+    localy_nodes = nodes[:]
     visited_nodes = []
     path_length = 0
     iterator = 50
@@ -24,15 +37,13 @@ def alg1(init_node):
     localy_nodes.remove(current_node)
     visited_nodes.append(current_node)
 
-    
-
     while iterator > 0:
         min_length = -1
         min_neighbor = current_node
-        
+
         for neighbor in localy_nodes:
             length = distance(current_node, neighbor)
-            if min_length == -1 or min_length >  length:
+            if min_length == -1 or min_length > length:
                 min_length = length
                 min_neighbor = neighbor
 
@@ -43,7 +54,7 @@ def alg1(init_node):
 
         iterator = iterator - 1
 
-    return path_length
+    print(path_length)
 
 
 with open("kroA100.txt", 'r') as instance:
@@ -52,8 +63,8 @@ with open("kroA100.txt", 'r') as instance:
         '\n', "").split(' ')) for line in str_nodes]
 
 
-print(alg1(np.random.randint(0, 100)))
-
+# print(alg1(np.random.randint(0, 100)))
+tests_50_alg1()
 # print(str(distance([1, 1380, 939], [2, 2848, 96])))
 
 # print(nodes)
