@@ -15,21 +15,34 @@ def convert_to_int_table(str_nodes):
 
 def alg1(init_node):
     # print(init_node)
+    localy_nodes = nodes
     visited_nodes = []
     path_length = 0
     iterator = 50
-    node = nodes[init_node]
-    nodes.remove(node)
+    current_node = nodes[init_node]
+    localy_nodes.remove(current_node)
+    visited_nodes.append(current_node)
 
     
 
     while iterator > 0:
+        min_length = -1
+        min_neighbor = current_node
         
-        # for nighbour
-        
-        # iterator = iterator - 1
+        for neighbor in localy_nodes:
+            length = distance(current_node, neighbor)
+            if min_length == -1 or min_length >  length:
+                min_length = length
+                min_neighbor = neighbor
 
-    return
+        path_length = path_length + min_length
+        localy_nodes.remove(min_neighbor)
+        visited_nodes.append(min_neighbor)
+        current_node = min_neighbor
+
+        iterator = iterator - 1
+
+    return localy_nodes
 
 
 with open("kroA100.txt", 'r') as instance:
@@ -38,7 +51,7 @@ with open("kroA100.txt", 'r') as instance:
         '\n', "").split(' ')) for line in str_nodes]
 
 
-alg1(np.random.randint(0, 100))
+print(alg1(np.random.randint(0, 100)))
 
 # print(str(distance([1, 1380, 939], [2, 2848, 96])))
 
