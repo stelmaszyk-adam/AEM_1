@@ -13,8 +13,9 @@ def convert_to_int_table(str_nodes):
     return [int(str_nodes[0]), int(str_nodes[1]), int(str_nodes[2])]
 
 
+
+
 def alg1(init_node):
-    # print(init_node)
     localy_nodes = nodes
     visited_nodes = []
     path_length = 0
@@ -42,7 +43,7 @@ def alg1(init_node):
 
         iterator = iterator - 1
 
-    return localy_nodes
+    return path_length
 
 
 with open("kroA100.txt", 'r') as instance:
