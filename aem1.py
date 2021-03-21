@@ -72,7 +72,7 @@ def alg1(init_node):
     visited_nodes=[]
     path_length=0
     iterator=len(nodes)/2
-    current_node=nodes[init_node][0]
+    current_node=nodes[init_node][0]-1
     localy_nodes.remove(current_node)
     visited_nodes.append(current_node)
 
@@ -101,7 +101,7 @@ def alg2(init_node):
     localy_nodes=[node[0]-1 for node in nodes]
     visited_nodes=[]
     iterator=len(nodes)/2
-    current_node=nodes[init_node][0]
+    current_node=nodes[init_node][0]-1
     localy_nodes.remove(current_node)
     visited_nodes.append(current_node)
     next_node, min_length=find_closest_neighbor(current_node, localy_nodes)
@@ -132,16 +132,13 @@ def alg2(init_node):
         iterator=iterator - 1
 
     return visited_nodes
-    # print(visited_nodes)
-    # print(len(visited_nodes))
-    # print(calculate_path_dist(distance_table, visited_nodes))
 
 
 def alg3(init_node):
     localy_nodes=[node[0]-1 for node in nodes]
     visited_nodes=[]
     iterator=len(nodes)/2
-    current_node=nodes[init_node][0]
+    current_node=nodes[init_node][0]-1
     localy_nodes.remove(current_node)
     visited_nodes.append(current_node)
     next_node, min_length=find_closest_neighbor(current_node, localy_nodes)
