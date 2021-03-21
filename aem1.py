@@ -1,5 +1,6 @@
 import numpy as np
 import math
+import operator
 
 
 nodes = []
@@ -39,6 +40,7 @@ def tests_50_alg1_2():
         # print(best_nodes)
         # print(best_path_length)
 
+
 def find_closest_neighbor(node, localy_nodes):
     min_length = -1
     min_neighbor = node
@@ -51,9 +53,8 @@ def find_closest_neighbor(node, localy_nodes):
     return min_neighbor, min_length
 
 
-
 def alg1(init_node):
-    localy_nodes = [ node[0]-1 for node in nodes]
+    localy_nodes = [node[0]-1 for node in nodes]
     visited_nodes = []
     path_length = 0
     iterator = len(nodes)/2
@@ -63,8 +64,9 @@ def alg1(init_node):
 
     while iterator > 1:
 
-        min_neighbor, min_length = find_closest_neighbor(current_node, localy_nodes)
-       
+        min_neighbor, min_length = find_closest_neighbor(
+            current_node, localy_nodes)
+
         path_length = path_length + min_length
         localy_nodes.remove(min_neighbor)
         visited_nodes.append(min_neighbor)
@@ -82,7 +84,7 @@ def alg1(init_node):
 
 
 def alg2(init_node):
-    localy_nodes = [ node[0]-1 for node in nodes]
+    localy_nodes = [node[0]-1 for node in nodes]
     visited_nodes = []
     iterator = len(nodes)/2
     current_node = nodes[init_node][0]
@@ -91,9 +93,8 @@ def alg2(init_node):
     next_node, min_length = find_closest_neighbor(current_node, localy_nodes)
     localy_nodes.remove(next_node)
     visited_nodes.append(next_node)
-    
 
-    while iterator > 1:
+    while iterator > 2:
         min_length = -1
         min_nodes_table = []
         min_node = next_node
@@ -102,7 +103,8 @@ def alg2(init_node):
             for i in range(len(visited_nodes)):
                 help_visited_nodes = visited_nodes[:]
                 help_visited_nodes.insert(i, neighbour)
-                length = calculate_path_dist(distance_table, help_visited_nodes)
+                length = calculate_path_dist(
+                    distance_table, help_visited_nodes)
 
                 if min_length == -1 or length < min_length:
                     min_length = length
@@ -116,31 +118,46 @@ def alg2(init_node):
         iterator = iterator - 1
 
     print(visited_nodes)
+    print(len(visited_nodes))
     print(calculate_path_dist(distance_table, visited_nodes))
 
 
-def alg3(init_nodes):
-    best_nodes = init_nodes
-    nodes_size = len(init_nodes)
-    best_path_length = calculate_path_dist(distance_table, best_nodes)
-    print(best_path_length)
-    improvement_factor = 1
+def alg3(init_node):
+    localy_nodes = [node[0]-1 for node in nodes]
+    visited_nodes = []
+    iterator = len(nodes)/2
+    current_node = nodes[init_node][0]
+    localy_nodes.remove(current_node)
+    visited_nodes.append(current_node)
+    next_node, min_length = find_closest_neighbor(current_node, localy_nodes)
+    localy_nodes.remove(next_node)
+    visited_nodes.append(next_node)
 
-    while improvement_factor > 0.01:
-        previous_best_length = best_path_length
-        for swap_first in range(1, nodes_size - 2):
-            for swap_last in range(swap_first + 1, nodes_size - 1):
-                new_nodes = swap(best_nodes, swap_first, swap_last)
-                new_path_length = calculate_path_dist(
-                    distance_table, new_nodes)
-                
-                if 0 < best_path_length - new_path_length:
-                    best_path_length = new_path_length
-                    best_nodes = new_nodes
+    while iterator > 2:
+        regret_node = {}
+        for neighbour in localy_nodes:
+            places_node = {}
+            for i in range(len(visited_nodes)):
+                help_visited_nodes = visited_nodes[:]
+                help_visited_nodes.insert(i, neighbour)
 
-        improvement_factor = 1 - best_path_length/previous_best_length
-    
-    return best_nodes, best_path_length
+                places_node[i+1] = calculate_path_dist(
+                    distance_table, help_visited_nodes)
+            help_vairable = sorted(places_node.items(),
+                                   key=operator.itemgetter(1))
+
+            regret_node[neighbour] = [
+                int(help_vairable[1][1] - help_vairable[0][1]), help_vairable[0][0]]
+
+        v_r = sorted(regret_node.items(), key=operator.itemgetter(1))
+        winner = v_r[-1]
+        visited_nodes.insert(int(winner[1][1]), int(winner[0]))
+
+        iterator = iterator - 1
+
+    print(visited_nodes)
+    print(len(visited_nodes))
+    print(calculate_path_dist(distance_table, visited_nodes))
 
 
 def calculate_path_dist(distance_matrix, path):
@@ -177,10 +194,10 @@ with open("kroA100.txt", 'r') as instance:
 
 create_distance_table()
 # print(distance_table)
-tests_50_alg1_2()
+# tests_50_alg1_2()
 # best_nodes, best_path_length = alg3(alg2(np.random.randint(0, 100)))
 
 # print(best_nodes)
 # print(best_path_length)
-# alg2(np.random.randint(0, 100))
-# alg1(np.random.randint(0, 100))
+alg3(np.random.randint(0, 100))
+alg1(np.random.randint(0, 100))
