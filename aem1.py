@@ -18,7 +18,7 @@ def tests_50_alg1_2():
 
     random_number_table = []
 
-    for _ in range(50):
+    for _ in range(2):
 
         random_number = np.random.randint(0, 100)
         while random_number in random_number_table:
@@ -30,34 +30,41 @@ def tests_50_alg1_2():
         alg1(random_number)
         print("\n")
         print("alg2: ")
+        alg2(random_number)
 
-        best_nodes, best_path_length = alg3(alg2(random_number))
+        # best_nodes, best_path_length = alg3(alg1(random_number))
 
-        print("\n")
-        print("alg3: ")
-        print(best_nodes)
-        print(best_path_length)
+        # print("\n")
+        # print("alg3: ")
+        # print(best_nodes)
+        # print(best_path_length)
+
+def find_closest_neighbor(node, localy_nodes):
+    min_length = -1
+    min_neighbor = node
+    for neighbor in localy_nodes:
+        length = distance_table[node][neighbor]
+        if (min_length == -1 or min_length > length) and node != neighbor:
+            min_length = length
+            min_neighbor = neighbor
+
+    return min_neighbor, min_length
+
 
 
 def alg1(init_node):
-    localy_nodes = nodes[:]
+    localy_nodes = [ node[0]-1 for node in nodes]
     visited_nodes = []
     path_length = 0
     iterator = len(nodes)/2
-    current_node = nodes[init_node]
+    current_node = nodes[init_node][0]
     localy_nodes.remove(current_node)
     visited_nodes.append(current_node)
 
     while iterator > 1:
-        min_length = -1
-        min_neighbor = current_node
 
-        for neighbor in localy_nodes:
-            length = distance(current_node, neighbor)
-            if min_length == -1 or min_length > length:
-                min_length = length
-                min_neighbor = neighbor
-
+        min_neighbor, min_length = find_closest_neighbor(current_node, localy_nodes)
+       
         path_length = path_length + min_length
         localy_nodes.remove(min_neighbor)
         visited_nodes.append(min_neighbor)
@@ -65,50 +72,51 @@ def alg1(init_node):
 
         iterator = iterator - 1
 
-    length = distance(visited_nodes[0], visited_nodes[-1])
+    length = distance_table[visited_nodes[0]][visited_nodes[-1]]
     path_length = path_length + length
 
+    print(visited_nodes)
     print(path_length)
-    print([visited_node[0]-1 for visited_node in visited_nodes])
+
+    return visited_nodes
 
 
 def alg2(init_node):
-    localy_nodes = nodes[:]
+    localy_nodes = [ node[0]-1 for node in nodes]
     visited_nodes = []
-    path_length = 0
     iterator = len(nodes)/2
-    current_node = nodes[init_node]
+    current_node = nodes[init_node][0]
     localy_nodes.remove(current_node)
     visited_nodes.append(current_node)
+    next_node, min_length = find_closest_neighbor(current_node, localy_nodes)
+    localy_nodes.remove(next_node)
+    visited_nodes.append(next_node)
+    
 
     while iterator > 1:
         min_length = -1
-        to_end_min_length = -1
-        min_neighbor = current_node
+        min_nodes_table = []
+        min_node = next_node
 
-        for neighbor in localy_nodes:
-            length = distance(current_node, neighbor)
-            to_end_length = distance(neighbor, nodes[init_node])
-            if min_length == -1 or min_length + to_end_min_length > length + to_end_length:
-                min_length = length
-                to_end_min_length = to_end_length
-                min_neighbor = neighbor
+        for neighbour in localy_nodes:
+            for i in range(len(visited_nodes)):
+                help_visited_nodes = visited_nodes[:]
+                help_visited_nodes.insert(i, neighbour)
+                length = calculate_path_dist(distance_table, help_visited_nodes)
 
-        path_length = path_length + min_length
-        localy_nodes.remove(min_neighbor)
-        visited_nodes.append(min_neighbor)
-        current_node = min_neighbor
+                if min_length == -1 or length < min_length:
+                    min_length = length
+                    min_node = neighbour
+                    min_nodes_table = help_visited_nodes[:]
+
+        localy_nodes.remove(min_node)
+
+        visited_nodes = min_nodes_table[:]
 
         iterator = iterator - 1
 
-    length = distance(visited_nodes[0], visited_nodes[-1])
-    path_length = path_length + length
-
-    print(path_length)
-    print([visited_node[0]-1 for visited_node in visited_nodes])
-
-    
-    return [visited_node[0]-1 for visited_node in visited_nodes]
+    print(visited_nodes)
+    print(calculate_path_dist(distance_table, visited_nodes))
 
 
 def alg3(init_nodes):
@@ -174,3 +182,5 @@ tests_50_alg1_2()
 
 # print(best_nodes)
 # print(best_path_length)
+# alg2(np.random.randint(0, 100))
+# alg1(np.random.randint(0, 100))
